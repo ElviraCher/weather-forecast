@@ -5,7 +5,8 @@ module.exports = {
         "jest/globals": true
     },
     "extends": [
-        "airbnb-base"
+        "airbnb-base",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": 12,
