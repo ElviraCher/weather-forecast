@@ -23,7 +23,9 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', { targets: "ie 11" }]
+            presets: [
+                ['@babel/preset-env', { targets: "ie 11" }]
+            ]
           }
         }
       }
