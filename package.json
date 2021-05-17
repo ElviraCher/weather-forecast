@@ -22,7 +22,10 @@
   },
   "homepage": "https://github.com/ElviraCher/weather-forecast#readme",
   "devDependencies": {
+    "@babel/core": "^7.14.2",
+    "@babel/preset-env": "^7.14.2",
     "@types/jest": "^26.0.23",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
