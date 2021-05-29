@@ -10,7 +10,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "import/prefer-default-export": "off",
+    "import/prefer-default-export": "on",
     "max-len": ["error", { ignoreComments: true }],
   },
   plugins: ["jest"],
