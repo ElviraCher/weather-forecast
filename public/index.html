@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Weather forecast</title>
   </head>
   <body>
-    <h1>Webpack is used</h1>
-    <script src="./src/index.js"></script>
+    <h1>Weather</h1>
+
+    <script type="module">
+      import { init } from '../src/script.js';
+      const el = document.createElement('div');
+      init(el);
+    </script>
   </body>
 </html>
