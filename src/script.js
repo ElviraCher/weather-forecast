@@ -33,20 +33,25 @@ export async function init(element) {
         const city = weatherAnswer.name;
         const country = weatherAnswer.sys.country;
         const temp = weatherAnswer.main.temp;
+        const img = weatherAnswer.weather[0].icon;
 
-        const temperatureHeader = document.createElement('h1');
-        const cityHeader = document.createElement('h1');
-        const labelCityHeader = document.createElement('h3');
-        const labelTemperatureHeader = document.createElement('h3');
+        const temperatureHeader = document.createElement('h2');
+        const cityHeader = document.createElement('h2');
+        const weatherImg = document.createElement('img');
+        const labelCityHeader = document.createElement('h4');
+        const labelTemperatureHeader = document.createElement('h4');
 
         labelTemperatureHeader.innerText = `temperature:`;
         temperatureHeader.innerText = temp;
         cityHeader.innerText = `${city} (${country})`;
         labelCityHeader.innerText = `city:`;
 
+        weatherImg.src = `https://openweathermap.org/img/wn/${img}@2x.png`;
+
         const div = document.querySelector('div');
         div.append(labelCityHeader);
         div.append(cityHeader);
+        div.append(weatherImg);
         div.append(labelTemperatureHeader)
         div.append(temperatureHeader);
     }
