@@ -5,15 +5,16 @@ const API_KEY = "88ce4f055b5f8a390b0c49938a6d8383";
 const temperatureUnit = 'metric';
 
 export async function init(element) {
-    const div = document.createElement('div');
-    div.append(element);
+    const form = document.createElement('form');
+    element.append(form);
     const input = document.createElement('input');
     const button = document.createElement('button');
     const list = document.createElement('ul');
     document.body.append(element);
-    element.appendChild(input);
-    element.append(button);
-    element.append(list);
+
+    form.append(input);
+    form.append(button);
+    form.append(list);
     button.innerText = "Get weather";
 
     async function getUserCoordinates() {
@@ -23,6 +24,7 @@ export async function init(element) {
         const latitude = addressAnswer.latitude;
         return `lat=${latitude}&lon=${longitude}`;
     }
+
     async function getWeather() {
         const userCoordinates = await getUserCoordinates();
 
@@ -58,6 +60,39 @@ export async function init(element) {
 
     await getWeather();
 
+    async function drawListOfCities() {
+        async function readCityList() {
+            const cityList = await JSON.parse(localStorage.getItem("list"));
+            return cityList ?? [];
+        }
+
+        function saveCityList(items) {
+            localStorage.setItem("list", JSON.stringify(items));
+        }
+
+        function drawList(el, items) {
+            el.innerHTML = `<ul>${items.map((el) => `<li>${el}</li>`).join("")}</ul>`;
+        }
+
+        const items = await readCityList();
+        drawList(list, items);
+        form.addEventListener("submit", (ev) => {
+            ev.preventDefault();
+
+        const formElement = ev.target;
+        const userInput = formElement.querySelector("input");
+        const value = userInput.value;
+        userInput.value = "";
+
+        items.push(value);
+
+        drawList(list, items);
+
+        saveCityList(items);
+        });
+    }
+
+    await drawListOfCities()
 }
 
 
