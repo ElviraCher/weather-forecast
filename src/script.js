@@ -77,6 +77,9 @@ export async function init(element) {
         function addCityToList(el, items) {
             if (!items.includes(el)) {
                 items.unshift(el);
+                if (items.length > 10) {
+                    items.pop();
+                }
             }
         }
 
