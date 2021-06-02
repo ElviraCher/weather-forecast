@@ -71,8 +71,13 @@ export async function init(element) {
         }
 
         function drawList(el, items) {
-            const reversedItems = items.reverse();
-            el.innerHTML = `<ul>${reversedItems.map((el) => `<li>${el}</li>`).join("")}</ul>`;
+            el.innerHTML = `<ul>${items.map((el) => `<li>${el}</li>`).join("")}</ul>`;
+        }
+
+        function addCityToList(el, items) {
+            if (!items.includes(el)) {
+                items.unshift(el);
+            }
         }
 
         const items = await readCityList();
@@ -84,12 +89,11 @@ export async function init(element) {
         const userInput = formElement.querySelector("input");
         const value = userInput.value;
         userInput.value = "";
-
-        items.push(value);
+        addCityToList(value, items);
+        saveCityList(items);
 
         drawList(list, items);
 
-        saveCityList(items);
         });
     }
 
