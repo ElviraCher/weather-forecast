@@ -71,7 +71,8 @@ export async function init(element) {
         }
 
         function drawList(el, items) {
-            el.innerHTML = `<ul>${items.map((el) => `<li>${el}</li>`).join("")}</ul>`;
+            const reversedItems = items.reverse();
+            el.innerHTML = `<ul>${reversedItems.map((el) => `<li>${el}</li>`).join("")}</ul>`;
         }
 
         const items = await readCityList();
