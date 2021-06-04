@@ -16,6 +16,12 @@ export async function init(element) {
   form.append(list);
   button.innerText = "Get weather";
 
+  const temperatureHeader = document.createElement("h2");
+  const cityHeader = document.createElement("h2");
+  const weatherImg = document.createElement("img");
+  const labelCityHeader = document.createElement("h4");
+  const labelTemperatureHeader = document.createElement("h4");
+
   async function getUserCoordinates() {
     const addressResponse = await fetch(userCity);
     const addressAnswer = await addressResponse.json();
@@ -24,34 +30,29 @@ export async function init(element) {
     return `lat=${latitude}&lon=${longitude}`;
   }
 
-  async function getWeather() {
-    const userCoordinates = await getUserCoordinates();
+  async function getWeather(coordinates, cityName) {
+    const urlByCity =
+      `${weatherUrl}?q=${cityName}` +
+      `&appid=${API_KEY}&units=${temperatureUnit}`;
+    const urlByCoordinates =
+      `${weatherUrl}?${coordinates}` +
+      `&appid=${API_KEY}&units=${temperatureUnit}`;
+    const weatherInCityUrl = coordinates ? urlByCoordinates : urlByCity;
 
-    // if (!userCoordinates) {
-    //   const urlByCity = `${weatherUrl}?q=${input.value}&appid=${API_KEY}&units=${temperatureUnit}`;
-    //   const weatherResponse = await fetch(urlByCity);
-    //   const weatherAnswer = await weatherResponse.json();
-    // }
+    const weatherResponse = await fetch(weatherInCityUrl);
+    return weatherResponse.json();
+  }
 
-    const url = `${weatherUrl}?${userCoordinates}
-    &appid=${API_KEY}&units=${temperatureUnit}`;
-    const weatherResponse = await fetch(url);
-    const weatherAnswer = await weatherResponse.json();
+  async function showWeather(weatherAnswer) {
     const city = weatherAnswer.name;
     const { country } = weatherAnswer.sys;
     const { temp } = weatherAnswer.main;
     const img = weatherAnswer.weather[0].icon;
 
-    const temperatureHeader = document.createElement("h2");
-    const cityHeader = document.createElement("h2");
-    const weatherImg = document.createElement("img");
-    const labelCityHeader = document.createElement("h4");
-    const labelTemperatureHeader = document.createElement("h4");
-
-    labelTemperatureHeader.innerText = `temperature:`;
-    temperatureHeader.innerText = `${Math.ceil(temp)}°C`;
-    cityHeader.innerText = `${city} (${country})`;
-    labelCityHeader.innerText = `city:`;
+    labelTemperatureHeader.innerHTML = `temperature:`;
+    temperatureHeader.innerHTML = `${Math.ceil(temp)}°C`;
+    cityHeader.innerHTML = `${city} (${country})`;
+    labelCityHeader.innerHTML = `city:`;
 
     weatherImg.src = `https://openweathermap.org/img/wn/${img}@2x.png`;
 
@@ -63,7 +64,19 @@ export async function init(element) {
     div.append(temperatureHeader);
   }
 
-  await getWeather();
+  async function initChangeOfCityAndWeather() {
+    const userCoordinates = await getUserCoordinates();
+    const weatherByCoordinates = await getWeather(userCoordinates);
+    await showWeather(weatherByCoordinates);
+
+    input.addEventListener("change", async (ev) => {
+      const cityName = ev.target.value;
+      const weatherByCityName = await getWeather(undefined, cityName);
+      await showWeather(weatherByCityName);
+    });
+  }
+
+  await initChangeOfCityAndWeather();
 
   async function readCityList() {
     const cityList = await JSON.parse(localStorage.getItem("list"));
@@ -75,9 +88,8 @@ export async function init(element) {
   }
 
   function drawList(el, items) {
-    const elem = el;
-    elem.innerHTML = `<ul>${items
-      .map((elem) => `<li>${elem}</li>`)
+    el.innerHTML = `<ul>${items
+      .map((cityElem) => `<li>${cityElem}</li>`)
       .join("")}</ul>`;
   }
 
