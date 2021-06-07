@@ -8,7 +8,7 @@ export async function init(element) {
   element.append(form);
   const input = document.createElement("input");
   const button = document.createElement("button");
-  const list = document.createElement("ul");
+  const list = document.createElement("p");
   document.body.append(element);
 
   form.append(input);
@@ -73,6 +73,14 @@ export async function init(element) {
       const cityName = ev.target.value;
       const weatherByCityName = await getWeather(undefined, cityName);
       await showWeather(weatherByCityName);
+    });
+
+    list.addEventListener("click", async (ev) => {
+      if (ev.target.tagName === "LI") {
+        const cityName = ev.target.innerText;
+        const weatherByCityName = await getWeather(undefined, cityName);
+        await showWeather(weatherByCityName);
+      }
     });
   }
 
