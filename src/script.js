@@ -27,9 +27,12 @@ export async function init(element) {
   weatherContainer.classList.add("weather-container");
   container.append(weatherContainer);
 
-  const mapContainer = document.createElement("div");
-  mapContainer.id = "map";
-  container.append(mapContainer);
+  function addMapToPage() {
+    const mapContainer = document.createElement("div");
+    mapContainer.id = "map";
+    container.append(mapContainer);
+  }
+  addMapToPage();
 
   const temperatureHeader = document.createElement("h2");
   const cityHeader = document.createElement("h2");
@@ -77,8 +80,16 @@ export async function init(element) {
     weatherContainer.append(labelTemperatureHeader);
     weatherContainer.append(temperatureHeader);
   }
+  function removeMap() {
+    let map = document.getElementById('map')
+    map.remove()
+  }
 
-  function createNewMap(weatherAnswer) {
+  function createNewMap(weatherAnswer, recreate=false) {
+    if (recreate) {
+      removeMap();
+      addMapToPage();
+    }
     const {lon, lat} = weatherAnswer.coord;
     ymaps.ready(createMap);
     function createMap(){
@@ -101,6 +112,7 @@ export async function init(element) {
       const cityName = ev.target.value;
       const weatherByCityName = await getWeather(undefined, cityName);
       await showWeather(weatherByCityName);
+      createNewMap(weatherByCityName, true);
     });
 
     list.addEventListener("click", async (ev) => {
@@ -108,6 +120,7 @@ export async function init(element) {
         const cityName = ev.target.innerText;
         const weatherByCityName = await getWeather(undefined, cityName);
         await showWeather(weatherByCityName);
+        createNewMap(weatherByCityName, true);
       }
     });
   }
