@@ -1,0 +1,26 @@
+body {
+    font-family: Chandas;
+}
+.container {
+    display: flex;
+    background-color: lightgrey;
+    padding: 20px;
+}
+.form-container {
+    float: left;
+    width: 33%;
+    background-color: lightgreen;
+    padding: 40px;
+}
+.weather-container {
+    float: right;
+    width: 33%;
+    background-color: lightskyblue;
+    padding: 40px;
+}
+
+#map {
+    min-width: 600px;
+    min-height: 400px;
+    background-color: antiquewhite;
+}
