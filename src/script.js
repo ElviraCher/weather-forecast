@@ -1,6 +1,8 @@
 const userCity = `https://get.geojs.io/v1/ip/geo.json`;
 const weatherUrl = "https://api.openweathermap.org/data/2.5/weather";
 const API_KEY = "88ce4f055b5f8a390b0c49938a6d8383";
+const yandexAPI_KEY = "6462035b-b76c-42e0-ba78-c93b08ab8d16";
+const mapUrl = `https://api-maps.yandex.ru/2.1?apikey=${yandexAPI_KEY}&lang=ru_RU`;
 const temperatureUnit = "metric";
 
 export async function init(element) {
