@@ -6,18 +6,30 @@ const mapUrl = `https://api-maps.yandex.ru/2.1?apikey=${yandexAPI_KEY}&lang=ru_R
 const temperatureUnit = "metric";
 
 export async function init(element) {
+  const container = document.createElement("div");
+  container.classList.add("container");
+
+  document.body.append(container);
   const form = document.createElement("form");
   element.classList.add("form-container");
   element.append(form);
   const input = document.createElement("input");
   const button = document.createElement("button");
   const list = document.createElement("p");
-  document.body.append(element);
+  container.append(element);
 
   form.append(input);
   form.append(button);
   form.append(list);
   button.innerText = "Get weather";
+
+  const weatherContainer = document.createElement("div");
+  weatherContainer.classList.add("weather-container");
+  container.append(weatherContainer);
+
+  const mapContainer = document.createElement("div");
+  mapContainer.id = "map";
+  container.append(mapContainer);
 
   const temperatureHeader = document.createElement("h2");
   const cityHeader = document.createElement("h2");
@@ -59,12 +71,11 @@ export async function init(element) {
 
     weatherImg.src = `https://openweathermap.org/img/wn/${img}@2x.png`;
 
-    const formContainer = document.querySelector(".form-container");
-    formContainer.append(labelCityHeader);
-    formContainer.append(cityHeader);
-    formContainer.append(weatherImg);
-    formContainer.append(labelTemperatureHeader);
-    formContainer.append(temperatureHeader);
+    weatherContainer.append(labelCityHeader);
+    weatherContainer.append(cityHeader);
+    weatherContainer.append(weatherImg);
+    weatherContainer.append(labelTemperatureHeader);
+    weatherContainer.append(temperatureHeader);
   }
 
   function createNewMap(weatherAnswer) {
