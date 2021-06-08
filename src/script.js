@@ -5,6 +5,7 @@ const temperatureUnit = "metric";
 
 export async function init(element) {
   const form = document.createElement("form");
+  element.classList.add("form-container");
   element.append(form);
   const input = document.createElement("input");
   const button = document.createElement("button");
@@ -56,12 +57,12 @@ export async function init(element) {
 
     weatherImg.src = `https://openweathermap.org/img/wn/${img}@2x.png`;
 
-    const div = document.querySelector("div");
-    div.append(labelCityHeader);
-    div.append(cityHeader);
-    div.append(weatherImg);
-    div.append(labelTemperatureHeader);
-    div.append(temperatureHeader);
+    const formContainer = document.querySelector(".form-container");
+    formContainer.append(labelCityHeader);
+    formContainer.append(cityHeader);
+    formContainer.append(weatherImg);
+    formContainer.append(labelTemperatureHeader);
+    formContainer.append(temperatureHeader);
   }
 
   async function initChangeOfCityAndWeather() {
