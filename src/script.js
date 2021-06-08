@@ -67,10 +67,24 @@ export async function init(element) {
     formContainer.append(temperatureHeader);
   }
 
+  function createNewMap(weatherAnswer) {
+    const {lon, lat} = weatherAnswer.coord;
+    ymaps.ready(createMap);
+    function createMap(){
+      const cityMap = new ymaps.Map("map", {
+        //передаем координаты места [lat, lon]
+        center: [lat, lon],
+        zoom: 9
+      });
+      console.log(cityMap);
+    }
+  }
+
   async function initChangeOfCityAndWeather() {
     const userCoordinates = await getUserCoordinates();
     const weatherByCoordinates = await getWeather(userCoordinates);
     await showWeather(weatherByCoordinates);
+    createNewMap(weatherByCoordinates);
 
     input.addEventListener("change", async (ev) => {
       const cityName = ev.target.value;
