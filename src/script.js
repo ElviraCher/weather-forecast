@@ -1,3 +1,5 @@
+/* global ymaps */
+
 const userCity = `https://get.geojs.io/v1/ip/geo.json`;
 const weatherUrl = "https://api.openweathermap.org/data/2.5/weather";
 const API_KEY = "88ce4f055b5f8a390b0c49938a6d8383";
@@ -80,23 +82,24 @@ export async function init(element) {
   }
 
   function removeMap() {
-    let map = document.getElementById('map');
+    const map = document.getElementById("map");
     map.remove();
   }
 
-  function createNewMap(weatherAnswer, recreate=false) {
+  function createNewMap(weatherAnswer, recreate = false) {
     if (recreate) {
       removeMap();
       addMapToPage();
     }
-    const {lon, lat} = weatherAnswer.coord;
-    ymaps.ready(createMap);
-    function createMap(){
-      const cityMap = new ymaps.Map("map", {
+    const { lon, lat } = weatherAnswer.coord;
+
+    const yandexMap = function createMap() {
+      return new ymaps.Map("map", {
         center: [lat, lon],
-        zoom: 9
+        zoom: 9,
       });
-    }
+    };
+    ymaps.ready(yandexMap);
   }
 
   async function initChangeOfCityAndWeather() {
@@ -134,7 +137,8 @@ export async function init(element) {
   }
 
   function drawList(el, items) {
-    el.innerHTML = `<ul>${items
+    const listEl = el;
+    listEl.innerHTML = `<ul>${items
       .map((cityElem) => `<li>${cityElem}</li>`)
       .join("")}</ul>`;
   }
