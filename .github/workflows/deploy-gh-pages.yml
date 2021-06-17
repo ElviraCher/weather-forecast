@@ -3,7 +3,7 @@ name: Deploy to GithubPages
 on:
   push:
     branches:
-      - master
+      - homework
 
 jobs:
   deploy-to-gh-pages:
