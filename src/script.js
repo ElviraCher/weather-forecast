@@ -164,3 +164,6 @@ export async function init(element) {
     drawList(list, items);
   });
 }
+
+const el = document.createElement("div");
+init(el);
