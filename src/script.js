@@ -1,6 +1,7 @@
 /* global ymaps */
 
 import regeneratorRuntime from "regenerator-runtime"; // eslint-disable-line
+import css from "./style.css"; // eslint-disable-line
 
 const userCity = `https://get.geojs.io/v1/ip/geo.json`;
 const weatherUrl = "https://api.openweathermap.org/data/2.5/weather";

@@ -28,6 +28,7 @@
     "@babel/preset-env": "^7.14.2",
     "@types/jest": "^26.0.23",
     "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.6",
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -37,8 +38,10 @@
     "html-webpack-plugin": "^5.3.1",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
+    "jest-transform-stub": "^2.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "^2.3.0",
+    "style-loader": "^2.0.0",
     "webpack": "^5.37.0",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2"
