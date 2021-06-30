@@ -8,136 +8,172 @@ const weatherUrl = "https://api.openweathermap.org/data/2.5/weather";
 const API_KEY = "88ce4f055b5f8a390b0c49938a6d8383";
 const temperatureUnit = "metric";
 
-export async function init(element) {
+const exportFunctions = {
+  // eslint-disable-next-line no-use-before-define
+  init,
+  // eslint-disable-next-line no-use-before-define
+  getUserCoordinates,
+  // eslint-disable-next-line no-use-before-define
+  getWeather,
+  // eslint-disable-next-line no-use-before-define
+  createNewMap,
+  // eslint-disable-next-line no-use-before-define
+  readCityList,
+  // eslint-disable-next-line no-use-before-define
+  saveCityList,
+};
+export default exportFunctions;
+
+async function getUserCoordinates() {
+  const addressResponse = await fetch(userCity);
+  const addressAnswer = await addressResponse.json();
+  const { longitude } = addressAnswer;
+  const { latitude } = addressAnswer;
+  return `lat=${latitude}&lon=${longitude}`;
+}
+
+async function getWeather(coordinates, cityName) {
+  const urlByCity =
+    `${weatherUrl}?q=${cityName}` +
+    `&appid=${API_KEY}&units=${temperatureUnit}`;
+  const urlByCoordinates =
+    `${weatherUrl}?${coordinates}` +
+    `&appid=${API_KEY}&units=${temperatureUnit}`;
+  const weatherInCityUrl = coordinates ? urlByCoordinates : urlByCity;
+
+  const weatherResponse = await fetch(weatherInCityUrl);
+  return weatherResponse.json();
+}
+
+function removeMap() {
+  const map = document.getElementById("map");
+  map.remove();
+}
+
+function addMapToPage(container) {
+  const mapContainer = document.createElement("div");
+  mapContainer.id = "map";
+  container.append(mapContainer);
+}
+
+function createNewMap(container, weatherAnswer, recreate = false) {
+  if (recreate) {
+    removeMap();
+    addMapToPage(container);
+  }
+  const { lon, lat } = weatherAnswer.coord;
+
+  const yandexMap = function createMap() {
+    return new ymaps.Map("map", {
+      center: [lat, lon],
+      zoom: 9,
+    });
+  };
+  ymaps.ready(yandexMap);
+}
+
+function readCityList() {
+  const cityList = JSON.parse(localStorage.getItem("list"));
+  return cityList ?? [];
+}
+
+function saveCityList(items) {
+  localStorage.setItem("list", JSON.stringify(items));
+}
+
+async function init() {
   const container = document.createElement("div");
   container.classList.add("container");
 
-  document.body.append(container);
-  const form = document.createElement("form");
-  element.classList.add("form-container");
-  element.append(form);
   const input = document.createElement("input");
-  const button = document.createElement("button");
   const list = document.createElement("p");
-  container.append(element);
+  const button = document.createElement("button");
+  button.innerText = "Get weather";
 
+  const form = document.createElement("form");
   form.append(input);
   form.append(button);
   form.append(list);
-  button.innerText = "Get weather";
+
+  const element = document.createElement("div");
+  element.classList.add("form-container");
+  element.append(form);
+
+  container.append(element);
 
   const weatherContainer = document.createElement("div");
   weatherContainer.classList.add("weather-container");
   container.append(weatherContainer);
 
-  function addMapToPage() {
-    const mapContainer = document.createElement("div");
-    mapContainer.id = "map";
-    container.append(mapContainer);
-  }
-  addMapToPage();
+  const labelCityHeader = document.createElement("h4");
+  labelCityHeader.classList.add("city");
+  weatherContainer.append(labelCityHeader);
+
+  const cityHeader = document.createElement("h2");
+  cityHeader.classList.add("city");
+  weatherContainer.append(cityHeader);
+
+  const labelTemperatureHeader = document.createElement("h4");
+  labelTemperatureHeader.classList.add("temp");
+  weatherContainer.append(labelTemperatureHeader);
+
+  const weatherImg = document.createElement("img");
+  weatherContainer.append(weatherImg);
 
   const temperatureHeader = document.createElement("h2");
-  const cityHeader = document.createElement("h2");
-  const weatherImg = document.createElement("img");
-  const labelCityHeader = document.createElement("h4");
-  const labelTemperatureHeader = document.createElement("h4");
+  temperatureHeader.classList.add("temp");
+  weatherContainer.append(temperatureHeader);
 
-  async function getUserCoordinates() {
-    const addressResponse = await fetch(userCity);
-    const addressAnswer = await addressResponse.json();
-    const { longitude } = addressAnswer;
-    const { latitude } = addressAnswer;
-    return `lat=${latitude}&lon=${longitude}`;
-  }
+  document.body.append(container);
+  addMapToPage(container);
 
-  async function getWeather(coordinates, cityName) {
-    const urlByCity =
-      `${weatherUrl}?q=${cityName}` +
-      `&appid=${API_KEY}&units=${temperatureUnit}`;
-    const urlByCoordinates =
-      `${weatherUrl}?${coordinates}` +
-      `&appid=${API_KEY}&units=${temperatureUnit}`;
-    const weatherInCityUrl = coordinates ? urlByCoordinates : urlByCity;
-
-    const weatherResponse = await fetch(weatherInCityUrl);
-    return weatherResponse.json();
-  }
-
-  async function showWeather(weatherAnswer) {
+  function showWeather(weatherAnswer) {
     const city = weatherAnswer.name;
     const { country } = weatherAnswer.sys;
     const { temp } = weatherAnswer.main;
     const img = weatherAnswer.weather[0].icon;
 
-    labelTemperatureHeader.innerHTML = `temperature:`;
-    temperatureHeader.innerHTML = `${Math.ceil(temp)}°C`;
-    cityHeader.innerHTML = `${city} (${country})`;
-    labelCityHeader.innerHTML = `city:`;
-
-    weatherImg.src = `https://openweathermap.org/img/wn/${img}@2x.png`;
-
-    weatherContainer.append(labelCityHeader);
-    weatherContainer.append(cityHeader);
-    weatherContainer.append(weatherImg);
-    weatherContainer.append(labelTemperatureHeader);
-    weatherContainer.append(temperatureHeader);
-  }
-
-  function removeMap() {
-    const map = document.getElementById("map");
-    map.remove();
-  }
-
-  function createNewMap(weatherAnswer, recreate = false) {
-    if (recreate) {
-      removeMap();
-      addMapToPage();
-    }
-    const { lon, lat } = weatherAnswer.coord;
-
-    const yandexMap = function createMap() {
-      return new ymaps.Map("map", {
-        center: [lat, lon],
-        zoom: 9,
-      });
-    };
-    ymaps.ready(yandexMap);
+    document.querySelector("h4.temp").textContent = `temperature:`;
+    document.querySelector("h2.temp").textContent = `${Math.ceil(temp)}°C`;
+    document.querySelector("h2.city").textContent = `${city} (${country})`;
+    document.querySelector("h4.city").textContent = `city:`;
+    document.querySelector(
+      ".weather-container > img"
+    ).src = `https://openweathermap.org/img/wn/${img}@2x.png`;
   }
 
   async function initChangeOfCityAndWeather() {
-    const userCoordinates = await getUserCoordinates();
-    const weatherByCoordinates = await getWeather(userCoordinates);
-    await showWeather(weatherByCoordinates);
-    createNewMap(weatherByCoordinates);
+    const userCoordinates = await exportFunctions.getUserCoordinates();
+    const weatherByCoordinates = await exportFunctions.getWeather(
+      userCoordinates
+    );
+    showWeather(weatherByCoordinates);
+    exportFunctions.createNewMap(container, weatherByCoordinates);
 
     input.addEventListener("change", async (ev) => {
       const cityName = ev.target.value;
-      const weatherByCityName = await getWeather(undefined, cityName);
-      await showWeather(weatherByCityName);
-      createNewMap(weatherByCityName, true);
+      const weatherByCityName = await exportFunctions.getWeather(
+        undefined,
+        cityName
+      );
+      showWeather(weatherByCityName);
+      exportFunctions.createNewMap(container, weatherByCityName, true);
     });
 
     list.addEventListener("click", async (ev) => {
       if (ev.target.tagName === "LI") {
         const cityName = ev.target.innerText;
-        const weatherByCityName = await getWeather(undefined, cityName);
-        await showWeather(weatherByCityName);
-        createNewMap(weatherByCityName, true);
+        const weatherByCityName = await exportFunctions.getWeather(
+          undefined,
+          cityName
+        );
+        showWeather(weatherByCityName);
+        exportFunctions.createNewMap(container, weatherByCityName, true);
       }
     });
   }
 
   await initChangeOfCityAndWeather();
-
-  async function readCityList() {
-    const cityList = await JSON.parse(localStorage.getItem("list"));
-    return cityList ?? [];
-  }
-
-  function saveCityList(items) {
-    localStorage.setItem("list", JSON.stringify(items));
-  }
 
   function drawList(el, items) {
     const listEl = el;
@@ -154,7 +190,7 @@ export async function init(element) {
       }
     }
   }
-  const items = await readCityList();
+  const items = exportFunctions.readCityList();
   drawList(list, items);
   form.addEventListener("submit", (ev) => {
     ev.preventDefault();
@@ -163,10 +199,9 @@ export async function init(element) {
     input.value = "";
 
     addCityToList(value, items);
-    saveCityList(items);
+    exportFunctions.saveCityList(items);
     drawList(list, items);
   });
 }
 
-const el = document.createElement("div");
-init(el);
+init();
