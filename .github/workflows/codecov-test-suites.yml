@@ -12,3 +12,6 @@ jobs:
       - run: nmp install # Install dependencies
       - run: npm run test # Get coverage
       - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
