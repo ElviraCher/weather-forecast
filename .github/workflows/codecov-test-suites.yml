@@ -3,11 +3,11 @@ name: Run Coverage Report
 on: [push]
 
 jobs:
-  environment: CI
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2 # Check out your repository
-      - run: yarn # Install dependencies
-      - run: yarn test --coverage # Run test
+      - name: Generate coverage report
+      - run: nmp install # Install dependencies
+      - run: npm run test # Get coverage
       - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
