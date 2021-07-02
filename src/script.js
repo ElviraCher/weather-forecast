@@ -25,24 +25,32 @@ const exportFunctions = {
 export default exportFunctions;
 
 async function getUserCoordinates() {
-  const addressResponse = await fetch(userCity);
-  const addressAnswer = await addressResponse.json();
-  const { longitude } = addressAnswer;
-  const { latitude } = addressAnswer;
-  return `lat=${latitude}&lon=${longitude}`;
+  try {
+    const addressResponse = await fetch(userCity);
+    const addressAnswer = await addressResponse.json();
+    const { longitude } = addressAnswer;
+    const { latitude } = addressAnswer;
+    return `lat=${latitude}&lon=${longitude}`;
+  } catch {
+    return new Error("Error in determining the city by coordinates");
+  }
 }
 
 async function getWeather(coordinates, cityName) {
-  const urlByCity =
-    `${weatherUrl}?q=${cityName}` +
-    `&appid=${API_KEY}&units=${temperatureUnit}`;
-  const urlByCoordinates =
-    `${weatherUrl}?${coordinates}` +
-    `&appid=${API_KEY}&units=${temperatureUnit}`;
-  const weatherInCityUrl = coordinates ? urlByCoordinates : urlByCity;
+  try {
+    const urlByCity =
+      `${weatherUrl}?q=${cityName}` +
+      `&appid=${API_KEY}&units=${temperatureUnit}`;
+    const urlByCoordinates =
+      `${weatherUrl}?${coordinates}` +
+      `&appid=${API_KEY}&units=${temperatureUnit}`;
+    const weatherInCityUrl = coordinates ? urlByCoordinates : urlByCity;
 
-  const weatherResponse = await fetch(weatherInCityUrl);
-  return weatherResponse.json();
+    const weatherResponse = await fetch(weatherInCityUrl);
+    return weatherResponse.json();
+  } catch {
+    return new Error("Service error");
+  }
 }
 
 function removeMap() {
@@ -129,8 +137,8 @@ async function init() {
 
   function showWeather(weatherAnswer) {
     const city = weatherAnswer.name;
-    const { country } = weatherAnswer.sys;
-    const { temp } = weatherAnswer.main;
+    const { country } = weatherAnswer.sys || {};
+    const { temp } = weatherAnswer.main || {};
     const img = weatherAnswer.weather[0].icon;
 
     document.querySelector("h4.temp").textContent = `temperature:`;
