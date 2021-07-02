@@ -1,11 +1,54 @@
 import functions from "./script";
 
-describe("init", () => {
-  it("is a function", () => {
-    expect(functions.init).toBeInstanceOf(Function);
+describe("script", () => {
+  beforeEach(() => {
+    let originalFetch;
+    beforeEach(() => {
+      originalFetch = window.fetch;
+    });
+    afterEach(() => {
+      window.fetch = originalFetch;
+    });
   });
 
-  it("creates input, button and paragraph inside element", () => {
+  describe("contains function getWeather, that", () => {
+    it("returns data by weather response", async () => {
+      window.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({
+          city: "Moscow",
+        }),
+      });
+      const data = await functions.getWeather(window.fetch);
+      expect(data).toStrictEqual({ city: "Moscow" });
+    });
+  });
+
+  describe("contains function getUserCoordinates, that", () => {
+    it("is a function", () => {
+      expect(functions.getUserCoordinates).toBeInstanceOf(Function);
+    });
+    it("returns string with longitude and latitude", async () => {
+      window.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({
+          region: "St.-Petersburg",
+          timezone: "Europe/Moscow",
+          longitude: "30.2618",
+          country_code3: "RUS",
+          area_code: "0",
+          ip: "95.161.221.189",
+          city: "St Petersburg",
+          country: "Russia",
+          continent_code: "EU",
+          country_code: "RU",
+          latitude: "59.8983",
+        }),
+      });
+      const d = await functions.getUserCoordinates(window.fetch);
+      expect(d).toStrictEqual("lat=59.8983&lon=30.2618");
+    });
+  });
+
+  it("creates input, button and paragraph on the page", () => {
     functions.init();
     const list = document.querySelector("p");
     const button = document.querySelector("button");
@@ -15,21 +58,18 @@ describe("init", () => {
     expect(button).not.toBe(null);
     expect(input).not.toBe(null);
   });
-});
 
-describe("getUserCoordinates", () => {
-  it("returns city coordinates", async () => {
+  it("shows city and temperature by user's coordinates", async () => {
     const userCoordinatesResult = "lat=30.2618&lon=59.8983";
     functions.getUserCoordinates = jest
       .fn()
       .mockReturnValue(userCoordinatesResult);
 
     const fakeData = {
-      coord: { lon: 30.2618, lat: 59.8983 },
       weather: [{ icon: "01d" }],
-      main: { temp: 22 },
-      sys: { country: "RU" },
-      name: "Saint Petersburg",
+      main: { temp: 12 },
+      sys: { country: "GB" },
+      name: "London",
     };
     functions.getWeather = jest.fn().mockReturnValue(fakeData);
     functions.createNewMap = jest.fn().mockReturnValue(null);
@@ -41,10 +81,8 @@ describe("getUserCoordinates", () => {
     const cityContainer = document.querySelector("h2.city");
     const tempContainer = document.querySelector("h2.temp");
 
-    expect(cityContainer.textContent).toBe("Saint Petersburg (RU)");
-    expect(tempContainer.textContent).toBe("22°C");
+    expect(cityContainer.textContent).toBe("London (GB)");
+    expect(tempContainer.textContent).toBe("12°C");
     expect(functions.getWeather).toHaveBeenCalledWith(userCoordinatesResult);
   });
-
-  it("shows city name, temperature, icon at the page", () => {});
 });
