@@ -14,8 +14,6 @@ module.exports = {
     environment: {
       arrowFunction: false,
     },
-    library: "yourLibName",
-    libraryTarget: "commonjs2",
   },
   module: {
     rules: [
@@ -34,5 +32,8 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
     ],
+  },
+  experiments: {
+    topLevelAwait: true,
   },
 };
