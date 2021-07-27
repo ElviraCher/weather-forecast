@@ -1,5 +1,4 @@
-import css from "./style.css"; // eslint-disable-line
-
+import "./style.css";
 import { getUserCoordinates, getWeather } from "./render-data";
 import {
   readCityList,
