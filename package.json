@@ -49,5 +49,8 @@
   "lint-staged": {
     "*.js": "eslint --cache --fix",
     "*.{js,css,md,yml,html}": "prettier --write"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.14.8"
   }
 }
