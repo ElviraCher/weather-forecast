@@ -8,7 +8,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "public/index.html",
     }),
-    [new MiniCssExtractPlugin()],
+    new MiniCssExtractPlugin(),
   ],
   output: {
     filename: "script.js",
