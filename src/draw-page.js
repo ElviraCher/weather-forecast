@@ -14,11 +14,11 @@ export async function init() {
   form.append(button);
   form.append(list);
 
-  const element = document.createElement("div");
-  element.classList.add("form-container");
-  element.append(form);
+  const formContainer = document.createElement("div");
+  formContainer.classList.add("form-container");
+  formContainer.append(form);
 
-  container.append(element);
+  container.append(formContainer);
 
   const weatherContainer = document.createElement("div");
   weatherContainer.classList.add("weather-container");
