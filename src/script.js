@@ -1,44 +1,19 @@
 import "./style.css";
-import { getUserCoordinates, getWeather } from "./render-data";
 import {
   readCityList,
   saveCityList,
   addCityToList,
   drawList,
+  initChangeOfCityAndWeather,
 } from "./components";
-import { init, showWeather } from "./draw-page";
-import { createNewMap } from "./map-generation";
+import { init } from "./draw-page";
 
-(async function () {
+(async function main() {
   await init();
 
   const form = document.querySelector("form");
   const list = document.querySelector("p");
-  const container = document.querySelector(".container");
   const input = document.querySelector("input");
-
-  async function initChangeOfCityAndWeather() {
-    const userCoordinates = await getUserCoordinates();
-    const weatherByCoordinates = await getWeather(userCoordinates);
-    showWeather(weatherByCoordinates);
-    createNewMap(container, weatherByCoordinates);
-
-    input.addEventListener("change", async (ev) => {
-      const cityName = ev.target.value;
-      const weatherByCityName = await getWeather(undefined, cityName);
-      showWeather(weatherByCityName);
-      createNewMap(container, weatherByCityName, true);
-    });
-
-    list.addEventListener("click", async (ev) => {
-      if (ev.target.tagName === "LI") {
-        const cityName = ev.target.innerText;
-        const weatherByCityName = await getWeather(undefined, cityName);
-        showWeather(weatherByCityName);
-        createNewMap(container, weatherByCityName, true);
-      }
-    });
-  }
 
   await initChangeOfCityAndWeather();
 
